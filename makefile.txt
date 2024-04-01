@@ -1,0 +1,14 @@
+output: parcer.o solver.o main.o 
+	g++ parcer.o solver.o main.o -o output
+
+parcer.o: parcer.cpp
+	g++ -c parcer.cpp -o parcer.o
+
+solver.o: solver.cpp
+	g++ -c solver.cpp -o solver.o
+
+main.o: main.cpp
+	g++ -c main.cpp -o main.o
+
+clean:
+	rm *.o
