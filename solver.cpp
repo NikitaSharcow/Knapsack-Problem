@@ -1,9 +1,9 @@
-#include "parcer.cpp"
+#include "Parcer.cpp"
 #include <algorithm>
 
 using namespace std;
 
-class Solver; 
+class Solver;
 
 class individ{
     friend class Solver;
@@ -28,6 +28,32 @@ class Solver: public Parcer{
         return res;
     }
     
+    void creating(long amount, int part){
+        int i,j,k,a,b = N/part, p = 100/part;
+        for (k=0;k<part;k++){
+            for (i=b*k; i<b*(k+1); i++) {
+                individ g;
+                for (j=0; j<N; j++) {
+                    a = rand()%101;
+                    if ((a > p*k) && (a < p*(k+1))) g.gene.push_back(1);
+                    else g.gene.push_back(0);
+                }
+                g.fitness = fitness_func(g.gene);
+                population.push_back(g);
+            }
+        }
+        for (i=b*3; i<amount; i++) {
+            individ g;
+            for (j=0; j<N; j++) {
+                a = rand()%100;
+                if (a > p*(part-1)) g.gene.push_back(1);
+                else g.gene.push_back(0);
+            }
+            g.fitness = fitness_func(g.gene);
+            population.push_back(g);
+        }
+    }
+    
     void crossing(long a1, long a2){
         long n = N/2, i;
         individ g1, g2;
@@ -43,7 +69,7 @@ class Solver: public Parcer{
         long r = rand()%101, ind, d;
         //mutation
         if (r <= 5){
-            ind = rand()%N, d = rand()%2;
+            ind = rand()%N; d = rand()%2;
             if (d==0) g1.gene[ind] = (g1.gene[ind]+1)%2;
             else g2.gene[ind] = (g2.gene[ind]+1)%2;
         }
@@ -53,24 +79,17 @@ class Solver: public Parcer{
         population.push_back(g2);
     }
 public:
-    Solver(ifstream &f_in, long amount=2000): Parcer(f_in){
-        long i,j,a,p,w=0;
+    Solver(ifstream &f_in, long amount=3000): Parcer(f_in){
+        long i,w=0;
         //create population
-        for (i=0; i<amount; i++) {
-            individ g;
-            g.fitness = 0;
-            for (j=0; j<N; j++) {
-                a = rand()%100;
-                if (a < 25) g.gene.push_back(1);
-                else g.gene.push_back(0);
-            }
-            g.fitness = fitness_func(g.gene);
-            population.push_back(g);
-        }
+        if (N<=10) creating(amount, N);
+        else if (N<100) creating(amount, 10);
+        else creating(amount, 100);
+        sort(population.begin(),population.end(),greater<individ>());
         for (i=0; i<amount; i++){
-            long a1 = rand()%amount, a2 = rand()%amount;
-            while (a1==a2) a2 = rand()%amount;
-            crossing(a1, a2);
+            //long a1 = rand()%amount, a2 = rand()%amount;
+            //while (a1==a2) a2 = rand()%amount;
+            crossing(0, 1);
             sort(population.begin(),population.end(),greater<individ>());
             population.pop_back();
             population.pop_back();
