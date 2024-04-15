@@ -29,8 +29,8 @@ class Solver: public Parcer{
     }
     
     void creating(long amount, int part){
-        int i,j,k,a,b = N/part, p = 100/part;
-        for (k=0;k<part;k++){
+        int i,j,k,a,b = amount/part, p = 100/part;
+        for (k=0;k<part-1;k++){
             for (i=b*k; i<b*(k+1); i++) {
                 individ g;
                 for (j=0; j<N; j++) {
@@ -42,7 +42,7 @@ class Solver: public Parcer{
                 population.push_back(g);
             }
         }
-        for (i=b*3; i<amount; i++) {
+        for (i=b*(k-1); i<amount; i++) {
             individ g;
             for (j=0; j<N; j++) {
                 a = rand()%100;
